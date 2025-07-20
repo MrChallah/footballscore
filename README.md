@@ -1,5 +1,7 @@
 # ⚽ Kenya Football Match Overlay
 
+# Collaborations: [CaptainGee on Kick](https://kick.com/captaingee) 
+
 A clean, mouse-only football match overlay for OBS streaming. Perfect for Kenya football matches with customizable team names, scores, timer, and match periods.
 
 ## 🚀 Quick Setup
