@@ -26,14 +26,14 @@
         <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
             <div class="bg-kick-dark border-2 border-kick-green rounded-xl px-8 py-4 shadow-2xl">
                 <div class="flex items-center justify-between space-x-12">
-                    <!-- Team Mombasa -->
+                    <!-- Team MAGHETTOS -->
                     <div class="text-center">
-                        <div id="team1-name" onclick="editTeamName('team1')" class="text-kick-green text-xl font-bold cursor-pointer hover:text-white transition-colors">MOMBASA</div>
+                        <div id="team1-name" onclick="editTeamName('team1')" class="text-kick-green text-xl font-bold cursor-pointer hover:text-white transition-colors">MAGHETTOS</div>
                         <div class="flex items-center space-x-2 mt-2">
                             <!-- Score Control Buttons (Hidden by default) -->
-                            <button id="mombasa-minus" onclick="changeScore('mombasa', -1)" class="bg-red-600 hover:bg-red-700 text-white w-8 h-8 rounded-full text-lg font-bold hidden">-</button>
-                            <div id="mombasa-score" onclick="toggleScoreControls('mombasa')" class="text-white text-3xl font-bold min-w-[3rem] text-center cursor-pointer hover:text-kick-green transition-colors">0</div>
-                            <button id="mombasa-plus" onclick="changeScore('mombasa', 1)" class="bg-kick-green hover:bg-green-400 text-kick-dark w-8 h-8 rounded-full text-lg font-bold hidden">+</button>
+                            <button id="MAGHETTOS-minus" onclick="changeScore('MAGHETTOS', -1)" class="bg-red-600 hover:bg-red-700 text-white w-8 h-8 rounded-full text-lg font-bold hidden">-</button>
+                            <div id="MAGHETTOS-score" onclick="toggleScoreControls('MAGHETTOS')" class="text-white text-3xl font-bold min-w-[3rem] text-center cursor-pointer hover:text-kick-green transition-colors">0</div>
+                            <button id="MAGHETTOS-plus" onclick="changeScore('MAGHETTOS', 1)" class="bg-kick-green hover:bg-green-400 text-kick-dark w-8 h-8 rounded-full text-lg font-bold hidden">+</button>
                         </div>
                     </div>
 
@@ -80,14 +80,14 @@
                         </div>
                     </div>
 
-                    <!-- Team Matata -->
+                    <!-- Team KAA Chonjoo -->
                     <div class="text-center">
-                        <div id="team2-name" onclick="editTeamName('team2')" class="text-kick-green text-xl font-bold cursor-pointer hover:text-white transition-colors">MATATA</div>
+                        <div id="team2-name" onclick="editTeamName('team2')" class="text-kick-green text-xl font-bold cursor-pointer hover:text-white transition-colors">KAA Chonjoo</div>
                         <div class="flex items-center space-x-2 mt-2">
                             <!-- Score Control Buttons (Hidden by default) -->
-                            <button id="matata-minus" onclick="changeScore('matata', -1)" class="bg-red-600 hover:bg-red-700 text-white w-8 h-8 rounded-full text-lg font-bold hidden">-</button>
-                            <div id="matata-score" onclick="toggleScoreControls('matata')" class="text-white text-3xl font-bold min-w-[3rem] text-center cursor-pointer hover:text-kick-green transition-colors">0</div>
-                            <button id="matata-plus" onclick="changeScore('matata', 1)" class="bg-kick-green hover:bg-green-400 text-kick-dark w-8 h-8 rounded-full text-lg font-bold hidden">+</button>
+                            <button id="KAA Chonjoo-minus" onclick="changeScore('KAA Chonjoo', -1)" class="bg-red-600 hover:bg-red-700 text-white w-8 h-8 rounded-full text-lg font-bold hidden">-</button>
+                            <div id="KAA Chonjoo-score" onclick="toggleScoreControls('KAA Chonjoo')" class="text-white text-3xl font-bold min-w-[3rem] text-center cursor-pointer hover:text-kick-green transition-colors">0</div>
+                            <button id="KAA Chonjoo-plus" onclick="changeScore('KAA Chonjoo', 1)" class="bg-kick-green hover:bg-green-400 text-kick-dark w-8 h-8 rounded-full text-lg font-bold hidden">+</button>
                         </div>
                     </div>
                 </div>
@@ -184,16 +184,16 @@
 
     <script>
         let gameState = {
-            mombasaScore: 0,
-            matataScore: 0,
+            MAGHETTOSScore: 0,
+            KAA ChonjooScore: 0,
             seconds: 0,
             milliseconds: 0,
             isRunning: false,
             period: '1ST HALF',
             addedTime: 0,
             overlayVisible: true,
-            team1Name: 'MOMBASA',
-            team2Name: 'MATATA'
+            team1Name: 'MAGHETTOS',
+            team2Name: 'KAA Chonjoo'
         };
 
         let timerInterval = null;
@@ -256,8 +256,8 @@
         }
 
         function updateDisplay() {
-            document.getElementById('mombasa-score').textContent = gameState.mombasaScore;
-            document.getElementById('matata-score').textContent = gameState.matataScore;
+            document.getElementById('MAGHETTOS-score').textContent = gameState.MAGHETTOSScore;
+            document.getElementById('KAA Chonjoo-score').textContent = gameState.KAA ChonjooScore;
             document.getElementById('period-display').textContent = gameState.period;
             document.getElementById('team1-name').textContent = gameState.team1Name;
             document.getElementById('team2-name').textContent = gameState.team2Name;
@@ -294,10 +294,10 @@
             document.getElementById('match-controls').classList.add('hidden');
             
             // Hide score controls for both teams
-            document.getElementById('mombasa-minus').classList.add('hidden');
-            document.getElementById('mombasa-plus').classList.add('hidden');
-            document.getElementById('matata-minus').classList.add('hidden');
-            document.getElementById('matata-plus').classList.add('hidden');
+            document.getElementById('MAGHETTOS-minus').classList.add('hidden');
+            document.getElementById('MAGHETTOS-plus').classList.add('hidden');
+            document.getElementById('KAA Chonjoo-minus').classList.add('hidden');
+            document.getElementById('KAA Chonjoo-plus').classList.add('hidden');
             
             // Don't hide keyboard overlay here as it has its own close methods
         }
@@ -330,10 +330,10 @@
         }
 
         function changeScore(team, delta) {
-            if (team === 'mombasa') {
-                gameState.mombasaScore = Math.max(0, gameState.mombasaScore + delta);
+            if (team === 'MAGHETTOS') {
+                gameState.MAGHETTOSScore = Math.max(0, gameState.MAGHETTOSScore + delta);
             } else {
-                gameState.matataScore = Math.max(0, gameState.matataScore + delta);
+                gameState.KAA ChonjooScore = Math.max(0, gameState.KAA ChonjooScore + delta);
             }
             updateDisplay();
         }
@@ -421,16 +421,16 @@
         function resetMatch() {
             pauseTimer();
             gameState = {
-                mombasaScore: 0,
-                matataScore: 0,
+                MAGHETTOSScore: 0,
+                KAA ChonjooScore: 0,
                 seconds: 0,
                 milliseconds: 0,
                 isRunning: false,
                 period: '1ST HALF',
                 addedTime: 0,
                 overlayVisible: true,
-                team1Name: 'MOMBASA',
-                team2Name: 'MATATA'
+                team1Name: 'MAGHETTOS',
+                team2Name: 'KAA Chonjoo'
             };
             updateDisplay();
         }
