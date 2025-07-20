@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenya Football Match Overlay</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'kick-green': '#53fc18',
+                        'kick-dark': '#0f0f23',
+                        'kick-gray': '#1a1a2e'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-transparent font-mono">
+    <!-- Main Overlay Container -->
+    <div class="relative w-screen h-screen overflow-hidden">
+        <!-- Match Display - Bottom Center -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
+            <div class="bg-kick-dark border-2 border-kick-green rounded-xl px-8 py-4 shadow-2xl">
+                <div class="flex items-center justify-between space-x-12">
+                    <!-- Team Mombasa -->
+                    <div class="text-center">
+                        <div id="team1-name" onclick="editTeamName('team1')" class="text-kick-green text-xl font-bold cursor-pointer hover:text-white transition-colors">MOMBASA</div>
+                        <div class="flex items-center space-x-2 mt-2">
+                            <!-- Score Control Buttons (Hidden by default) -->
+                            <button id="mombasa-minus" onclick="changeScore('mombasa', -1)" class="bg-red-600 hover:bg-red-700 text-white w-8 h-8 rounded-full text-lg font-bold hidden">-</button>
+                            <div id="mombasa-score" onclick="toggleScoreControls('mombasa')" class="text-white text-3xl font-bold min-w-[3rem] text-center cursor-pointer hover:text-kick-green transition-colors">0</div>
+                            <button id="mombasa-plus" onclick="changeScore('mombasa', 1)" class="bg-kick-green hover:bg-green-400 text-kick-dark w-8 h-8 rounded-full text-lg font-bold hidden">+</button>
+                        </div>
+                    </div>
+
+                    <!-- VS & Timer -->
+                    <div class="text-center">
+                        <div class="text-kick-green text-lg font-bold mb-2">VS</div>
+                        <div id="timer-display" onclick="toggleTimerControls()" class="text-white text-4xl font-bold mb-2 cursor-pointer hover:text-kick-green transition-colors">00:00</div>
+                        <div class="text-kick-green text-sm cursor-pointer hover:text-white transition-colors" id="period-display" onclick="togglePeriodMenu()">1ST HALF</div>
+                        
+                        <!-- Timer Controls (Hidden by default) -->
+                        <div id="timer-controls" class="hidden mt-2 space-x-1">
+                            <button id="start-btn" onclick="startTimer()" class="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-xs font-bold">START</button>
+                            <button id="pause-btn" onclick="pauseTimer()" class="bg-yellow-600 hover:bg-yellow-700 text-white px-2 py-1 rounded text-xs font-bold">PAUSE</button>
+                            <button onclick="resetTimer()" class="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-xs font-bold">RESET</button>
+                        </div>
+                        
+                        <!-- Time Adjustment Controls (Hidden by default) -->
+                        <div id="time-adjust-controls" class="hidden mt-2 space-x-1">
+                            <button onclick="adjustTime(60)" class="bg-kick-green hover:bg-green-400 text-kick-dark px-2 py-1 rounded text-xs font-bold">+1M</button>
+                            <button onclick="adjustTime(-60)" class="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-xs font-bold">-1M</button>
+                            <button onclick="adjustTime(30)" class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs font-bold">+30S</button>
+                        </div>
+                        
+                        <!-- Period Menu (Hidden by default) -->
+                        <div id="period-menu" class="absolute bottom-20 left-1/2 transform -translate-x-1/2 bg-kick-dark border border-kick-green rounded hidden min-w-[120px]">
+                            <button onclick="setPeriod('1ST HALF')" class="block w-full text-left px-3 py-2 text-white hover:bg-kick-gray text-sm">1ST HALF</button>
+                            <button onclick="setPeriod('2ND HALF')" class="block w-full text-left px-3 py-2 text-white hover:bg-kick-gray text-sm">2ND HALF</button>
+                            <button onclick="setPeriod('OVERTIME')" class="block w-full text-left px-3 py-2 text-white hover:bg-kick-gray text-sm">OVERTIME</button>
+                            <button onclick="setPeriod('PENALTIES')" class="block w-full text-left px-3 py-2 text-white hover:bg-kick-gray text-sm">PENALTIES</button>
+                            <button onclick="setPeriod('HALF TIME')" class="block w-full text-left px-3 py-2 text-white hover:bg-kick-gray text-sm">HALF TIME</button>
+                            <button onclick="setPeriod('FULL TIME')" class="block w-full text-left px-3 py-2 text-white hover:bg-kick-gray text-sm">FULL TIME</button>
+                        </div>
+                    </div>
+
+                    <!-- Team Matata -->
+                    <div class="text-center">
+                        <div id="team2-name" onclick="editTeamName('team2')" class="text-kick-green text-xl font-bold cursor-pointer hover:text-white transition-colors">MATATA</div>
+                        <div class="flex items-center space-x-2 mt-2">
+                            <!-- Score Control Buttons (Hidden by default) -->
+                            <button id="matata-minus" onclick="changeScore('matata', -1)" class="bg-red-600 hover:bg-red-700 text-white w-8 h-8 rounded-full text-lg font-bold hidden">-</button>
+                            <div id="matata-score" onclick="toggleScoreControls('matata')" class="text-white text-3xl font-bold min-w-[3rem] text-center cursor-pointer hover:text-kick-green transition-colors">0</div>
+                            <button id="matata-plus" onclick="changeScore('matata', 1)" class="bg-kick-green hover:bg-green-400 text-kick-dark w-8 h-8 rounded-full text-lg font-bold hidden">+</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Match Controls (Hidden by default) -->
+                <div id="match-controls" class="hidden mt-4 text-center space-x-2">
+                    <button onclick="resetMatch()" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded text-xs font-bold">NEW MATCH</button>
+                    <button onclick="toggleOverlay()" class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-xs font-bold" id="overlay-btn">HIDE</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Time Display -->
+        <div class="absolute top-32 left-1/2 transform -translate-x-1/2 z-10" id="added-time-display" style="display: none;">
+            <div class="bg-red-600 text-white px-4 py-2 rounded-lg font-bold">
+                <span id="added-time-text">+2 MIN</span>
+            </div>
+        </div>
+
+        <!-- On-Screen Keyboard -->
+        <div id="keyboard-overlay" class="absolute inset-0 bg-black bg-opacity-75 flex items-center justify-center z-20 hidden">
+            <div class="bg-kick-dark border-2 border-kick-green rounded-xl p-6 max-w-lg">
+                <div class="text-center mb-4">
+                    <div class="text-kick-green text-lg font-bold">EDIT TEAM NAME</div>
+                    <input id="team-name-input" type="text" class="bg-kick-gray text-white text-center text-xl font-bold px-4 py-2 mt-2 rounded border border-kick-green focus:outline-none focus:border-white" maxlength="12" readonly>
+                </div>
+                
+                <!-- Keyboard -->
+                <div class="space-y-2">
+                    <!-- Row 1 -->
+                    <div class="flex justify-center space-x-1">
+                        <button onclick="typeChar('Q')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">Q</button>
+                        <button onclick="typeChar('W')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">W</button>
+                        <button onclick="typeChar('E')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">E</button>
+                        <button onclick="typeChar('R')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">R</button>
+                        <button onclick="typeChar('T')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">T</button>
+                        <button onclick="typeChar('Y')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">Y</button>
+                        <button onclick="typeChar('U')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">U</button>
+                        <button onclick="typeChar('I')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">I</button>
+                        <button onclick="typeChar('O')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">O</button>
+                        <button onclick="typeChar('P')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">P</button>
+                    </div>
+                    
+                    <!-- Row 2 -->
+                    <div class="flex justify-center space-x-1">
+                        <button onclick="typeChar('A')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">A</button>
+                        <button onclick="typeChar('S')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">S</button>
+                        <button onclick="typeChar('D')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">D</button>
+                        <button onclick="typeChar('F')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">F</button>
+                        <button onclick="typeChar('G')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">G</button>
+                        <button onclick="typeChar('H')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">H</button>
+                        <button onclick="typeChar('J')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">J</button>
+                        <button onclick="typeChar('K')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">K</button>
+                        <button onclick="typeChar('L')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">L</button>
+                    </div>
+                    
+                    <!-- Row 3 -->
+                    <div class="flex justify-center space-x-1">
+                        <button onclick="typeChar('Z')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">Z</button>
+                        <button onclick="typeChar('X')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">X</button>
+                        <button onclick="typeChar('C')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">C</button>
+                        <button onclick="typeChar('V')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">V</button>
+                        <button onclick="typeChar('B')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">B</button>
+                        <button onclick="typeChar('N')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">N</button>
+                        <button onclick="typeChar('M')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">M</button>
+                        <button onclick="typeChar(' ')" class="bg-kick-gray hover:bg-gray-600 text-white w-16 h-10 rounded font-bold">SPACE</button>
+                    </div>
+                    
+                    <!-- Numbers -->
+                    <div class="flex justify-center space-x-1">
+                        <button onclick="typeChar('1')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">1</button>
+                        <button onclick="typeChar('2')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">2</button>
+                        <button onclick="typeChar('3')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">3</button>
+                        <button onclick="typeChar('4')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">4</button>
+                        <button onclick="typeChar('5')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">5</button>
+                        <button onclick="typeChar('6')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">6</button>
+                        <button onclick="typeChar('7')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">7</button>
+                        <button onclick="typeChar('8')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">8</button>
+                        <button onclick="typeChar('9')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">9</button>
+                        <button onclick="typeChar('0')" class="bg-kick-gray hover:bg-gray-600 text-white w-10 h-10 rounded font-bold">0</button>
+                    </div>
+                    
+                    <!-- Control Buttons -->
+                    <div class="flex justify-center space-x-2 mt-4">
+                        <button onclick="backspace()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded font-bold">BACKSPACE</button>
+                        <button onclick="clearInput()" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded font-bold">CLEAR</button>
+                        <button onclick="saveTeamName()" class="bg-kick-green hover:bg-green-400 text-kick-dark px-4 py-2 rounded font-bold">SAVE</button>
+                        <button onclick="cancelEdit()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded font-bold">CANCEL</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            mombasaScore: 0,
+            matataScore: 0,
+            seconds: 0,
+            isRunning: false,
+            period: '1ST HALF',
+            addedTime: 0,
+            overlayVisible: true,
+            team1Name: 'MOMBASA',
+            team2Name: 'MATATA'
+        };
+
+        let timerInterval = null;
+        let currentEditingTeam = null;
+
+        // Team Name Editing Functions
+        function editTeamName(team) {
+            hideAllControls();
+            currentEditingTeam = team;
+            const keyboardOverlay = document.getElementById('keyboard-overlay');
+            const input = document.getElementById('team-name-input');
+            
+            // Set current team name in input
+            if (team === 'team1') {
+                input.value = gameState.team1Name;
+            } else {
+                input.value = gameState.team2Name;
+            }
+            
+            keyboardOverlay.classList.remove('hidden');
+        }
+
+        function typeChar(char) {
+            const input = document.getElementById('team-name-input');
+            if (input.value.length < 12) {
+                input.value += char;
+            }
+        }
+
+        function backspace() {
+            const input = document.getElementById('team-name-input');
+            input.value = input.value.slice(0, -1);
+        }
+
+        function clearInput() {
+            const input = document.getElementById('team-name-input');
+            input.value = '';
+        }
+
+        function saveTeamName() {
+            const input = document.getElementById('team-name-input');
+            const newName = input.value.trim().toUpperCase();
+            
+            if (newName.length > 0) {
+                if (currentEditingTeam === 'team1') {
+                    gameState.team1Name = newName;
+                } else {
+                    gameState.team2Name = newName;
+                }
+                updateDisplay();
+            }
+            
+            cancelEdit();
+        }
+
+        function cancelEdit() {
+            const keyboardOverlay = document.getElementById('keyboard-overlay');
+            keyboardOverlay.classList.add('hidden');
+            currentEditingTeam = null;
+        }
+
+        function updateDisplay() {
+            document.getElementById('mombasa-score').textContent = gameState.mombasaScore;
+            document.getElementById('matata-score').textContent = gameState.matataScore;
+            document.getElementById('period-display').textContent = gameState.period;
+            document.getElementById('team1-name').textContent = gameState.team1Name;
+            document.getElementById('team2-name').textContent = gameState.team2Name;
+            
+            const minutes = Math.floor(gameState.seconds / 60);
+            const seconds = gameState.seconds % 60;
+            document.getElementById('timer-display').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            // Update button states only if timer controls are visible
+            const timerControls = document.getElementById('timer-controls');
+            if (!timerControls.classList.contains('hidden')) {
+                const startBtn = document.getElementById('start-btn');
+                const pauseBtn = document.getElementById('pause-btn');
+                
+                if (gameState.isRunning) {
+                    startBtn.textContent = 'RUNNING';
+                    startBtn.className = 'bg-gray-500 text-white px-2 py-1 rounded text-xs font-bold cursor-not-allowed';
+                    pauseBtn.className = 'bg-yellow-600 hover:bg-yellow-700 text-white px-2 py-1 rounded text-xs font-bold';
+                } else {
+                    startBtn.textContent = 'START';
+                    startBtn.className = 'bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-xs font-bold';
+                    pauseBtn.className = 'bg-gray-500 text-white px-2 py-1 rounded text-xs font-bold cursor-not-allowed';
+                }
+            }
+        }
+
+        function hideAllControls() {
+            // Hide all control panels
+            document.getElementById('timer-controls').classList.add('hidden');
+            document.getElementById('time-adjust-controls').classList.add('hidden');
+            document.getElementById('period-menu').classList.add('hidden');
+            document.getElementById('match-controls').classList.add('hidden');
+            
+            // Hide score controls for both teams
+            document.getElementById('mombasa-minus').classList.add('hidden');
+            document.getElementById('mombasa-plus').classList.add('hidden');
+            document.getElementById('matata-minus').classList.add('hidden');
+            document.getElementById('matata-plus').classList.add('hidden');
+            
+            // Don't hide keyboard overlay here as it has its own close methods
+        }
+
+        function toggleScoreControls(team) {
+            hideAllControls();
+            const minusBtn = document.getElementById(team + '-minus');
+            const plusBtn = document.getElementById(team + '-plus');
+            
+            minusBtn.classList.remove('hidden');
+            plusBtn.classList.remove('hidden');
+            
+            // Show match controls as well
+            document.getElementById('match-controls').classList.remove('hidden');
+        }
+
+        function toggleTimerControls() {
+            hideAllControls();
+            const timerControls = document.getElementById('timer-controls');
+            const timeAdjustControls = document.getElementById('time-adjust-controls');
+            
+            timerControls.classList.remove('hidden');
+            timeAdjustControls.classList.remove('hidden');
+            
+            // Show match controls as well
+            document.getElementById('match-controls').classList.remove('hidden');
+            
+            // Update button states
+            updateDisplay();
+        }
+
+        function changeScore(team, delta) {
+            if (team === 'mombasa') {
+                gameState.mombasaScore = Math.max(0, gameState.mombasaScore + delta);
+            } else {
+                gameState.matataScore = Math.max(0, gameState.matataScore + delta);
+            }
+            updateDisplay();
+        }
+
+        function startTimer() {
+            if (!gameState.isRunning) {
+                gameState.isRunning = true;
+                timerInterval = setInterval(() => {
+                    gameState.seconds++;
+                    updateDisplay();
+                }, 1000);
+                updateDisplay();
+            }
+        }
+
+        function pauseTimer() {
+            if (gameState.isRunning) {
+                gameState.isRunning = false;
+                clearInterval(timerInterval);
+                updateDisplay();
+            }
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            gameState.seconds = 0;
+            updateDisplay();
+        }
+
+        function adjustTime(secondsToAdd) {
+            gameState.seconds = Math.max(0, gameState.seconds + secondsToAdd);
+            updateDisplay();
+            
+            // Show added time indicator for positive adjustments
+            if (secondsToAdd > 0) {
+                const addedTimeDisplay = document.getElementById('added-time-display');
+                const addedTimeText = document.getElementById('added-time-text');
+                addedTimeText.textContent = `+${Math.floor(secondsToAdd / 60)} MIN`;
+                addedTimeDisplay.style.display = 'block';
+                setTimeout(() => {
+                    addedTimeDisplay.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        function togglePeriodMenu() {
+            hideAllControls();
+            const menu = document.getElementById('period-menu');
+            menu.classList.remove('hidden');
+            
+            // Show match controls as well
+            document.getElementById('match-controls').classList.remove('hidden');
+        }
+
+        function setPeriod(period) {
+            gameState.period = period;
+            hideAllControls();
+            updateDisplay();
+        }
+
+        function resetMatch() {
+            pauseTimer();
+            gameState = {
+                mombasaScore: 0,
+                matataScore: 0,
+                seconds: 0,
+                isRunning: false,
+                period: '1ST HALF',
+                addedTime: 0,
+                overlayVisible: true,
+                team1Name: 'MOMBASA',
+                team2Name: 'MATATA'
+            };
+            updateDisplay();
+        }
+
+        function toggleOverlay() {
+            const mainDisplay = document.querySelector('.bg-kick-dark.border-2.border-kick-green');
+            const btn = document.getElementById('overlay-btn');
+            
+            if (gameState.overlayVisible) {
+                mainDisplay.style.opacity = '0.1';
+                btn.textContent = 'SHOW';
+                gameState.overlayVisible = false;
+            } else {
+                mainDisplay.style.opacity = '1';
+                btn.textContent = 'HIDE';
+                gameState.overlayVisible = true;
+            }
+        }
+
+        // Close all controls when clicking outside the main overlay
+        document.addEventListener('click', function(event) {
+            const mainOverlay = document.querySelector('.bg-kick-dark.border-2.border-kick-green');
+            const keyboardOverlay = document.getElementById('keyboard-overlay');
+            
+            // Don't hide controls if keyboard is open or if clicking inside main overlay
+            if (!keyboardOverlay.classList.contains('hidden')) {
+                return; // Keyboard is open, don't hide anything
+            }
+            
+            if (!mainOverlay.contains(event.target)) {
+                hideAllControls();
+            }
+        });
+
+        // Initialize display
+        updateDisplay();
+    </script>
+</body>
+</html> 
