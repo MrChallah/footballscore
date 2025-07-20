@@ -382,7 +382,20 @@
             if (secondsToAdd > 0) {
                 const addedTimeDisplay = document.getElementById('added-time-display');
                 const addedTimeText = document.getElementById('added-time-text');
-                addedTimeText.textContent = `+${Math.floor(secondsToAdd / 60)} MIN`;
+                
+                // Display appropriate time unit
+                if (secondsToAdd >= 60) {
+                    const minutes = Math.floor(secondsToAdd / 60);
+                    const remainingSeconds = secondsToAdd % 60;
+                    if (remainingSeconds === 0) {
+                        addedTimeText.textContent = `+${minutes} MIN`;
+                    } else {
+                        addedTimeText.textContent = `+${minutes}M ${remainingSeconds}S`;
+                    }
+                } else {
+                    addedTimeText.textContent = `+${secondsToAdd} SEC`;
+                }
+                
                 addedTimeDisplay.style.display = 'block';
                 setTimeout(() => {
                     addedTimeDisplay.style.display = 'none';
@@ -456,4 +469,4 @@
         updateDisplay();
     </script>
 </body>
-</html> 
+</html>
