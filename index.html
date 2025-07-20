@@ -31,9 +31,9 @@
                         <div id="team1-name" onclick="editTeamName('team1')" class="text-kick-green text-xl font-bold cursor-pointer hover:text-white transition-colors">MAGHETTOS</div>
                         <div class="flex items-center space-x-2 mt-2">
                             <!-- Score Control Buttons (Hidden by default) -->
-                            <button id="MAGHETTOS-minus" onclick="changeScore('MAGHETTOS', -1)" class="bg-red-600 hover:bg-red-700 text-white w-8 h-8 rounded-full text-lg font-bold hidden">-</button>
-                            <div id="MAGHETTOS-score" onclick="toggleScoreControls('MAGHETTOS')" class="text-white text-3xl font-bold min-w-[3rem] text-center cursor-pointer hover:text-kick-green transition-colors">0</div>
-                            <button id="MAGHETTOS-plus" onclick="changeScore('MAGHETTOS', 1)" class="bg-kick-green hover:bg-green-400 text-kick-dark w-8 h-8 rounded-full text-lg font-bold hidden">+</button>
+                            <button id="team1-minus" onclick="changeScore('team1', -1)" class="bg-red-600 hover:bg-red-700 text-white w-8 h-8 rounded-full text-lg font-bold hidden">-</button>
+                            <div id="team1-score" onclick="toggleScoreControls('team1')" class="text-white text-3xl font-bold min-w-[3rem] text-center cursor-pointer hover:text-kick-green transition-colors">0</div>
+                            <button id="team1-plus" onclick="changeScore('team1', 1)" class="bg-kick-green hover:bg-green-400 text-kick-dark w-8 h-8 rounded-full text-lg font-bold hidden">+</button>
                         </div>
                     </div>
 
@@ -85,9 +85,9 @@
                         <div id="team2-name" onclick="editTeamName('team2')" class="text-kick-green text-xl font-bold cursor-pointer hover:text-white transition-colors">KAA Chonjoo</div>
                         <div class="flex items-center space-x-2 mt-2">
                             <!-- Score Control Buttons (Hidden by default) -->
-                            <button id="KAA Chonjoo-minus" onclick="changeScore('KAA Chonjoo', -1)" class="bg-red-600 hover:bg-red-700 text-white w-8 h-8 rounded-full text-lg font-bold hidden">-</button>
-                            <div id="KAA Chonjoo-score" onclick="toggleScoreControls('KAA Chonjoo')" class="text-white text-3xl font-bold min-w-[3rem] text-center cursor-pointer hover:text-kick-green transition-colors">0</div>
-                            <button id="KAA Chonjoo-plus" onclick="changeScore('KAA Chonjoo', 1)" class="bg-kick-green hover:bg-green-400 text-kick-dark w-8 h-8 rounded-full text-lg font-bold hidden">+</button>
+                            <button id="team2-minus" onclick="changeScore('team2', -1)" class="bg-red-600 hover:bg-red-700 text-white w-8 h-8 rounded-full text-lg font-bold hidden">-</button>
+                            <div id="team2-score" onclick="toggleScoreControls('team2')" class="text-white text-3xl font-bold min-w-[3rem] text-center cursor-pointer hover:text-kick-green transition-colors">0</div>
+                            <button id="team2-plus" onclick="changeScore('team2', 1)" class="bg-kick-green hover:bg-green-400 text-kick-dark w-8 h-8 rounded-full text-lg font-bold hidden">+</button>
                         </div>
                     </div>
                 </div>
@@ -184,8 +184,8 @@
 
     <script>
         let gameState = {
-            MAGHETTOSScore: 0,
-            KAA ChonjooScore: 0,
+            team1Score: 0,
+            team2Score: 0,
             seconds: 0,
             milliseconds: 0,
             isRunning: false,
@@ -256,8 +256,8 @@
         }
 
         function updateDisplay() {
-            document.getElementById('MAGHETTOS-score').textContent = gameState.MAGHETTOSScore;
-            document.getElementById('KAA Chonjoo-score').textContent = gameState.KAA ChonjooScore;
+            document.getElementById('team1-score').textContent = gameState.team1Score;
+            document.getElementById('team2-score').textContent = gameState.team2Score;
             document.getElementById('period-display').textContent = gameState.period;
             document.getElementById('team1-name').textContent = gameState.team1Name;
             document.getElementById('team2-name').textContent = gameState.team2Name;
@@ -294,10 +294,10 @@
             document.getElementById('match-controls').classList.add('hidden');
             
             // Hide score controls for both teams
-            document.getElementById('MAGHETTOS-minus').classList.add('hidden');
-            document.getElementById('MAGHETTOS-plus').classList.add('hidden');
-            document.getElementById('KAA Chonjoo-minus').classList.add('hidden');
-            document.getElementById('KAA Chonjoo-plus').classList.add('hidden');
+            document.getElementById('team1-minus').classList.add('hidden');
+            document.getElementById('team1-plus').classList.add('hidden');
+            document.getElementById('team2-minus').classList.add('hidden');
+            document.getElementById('team2-plus').classList.add('hidden');
             
             // Don't hide keyboard overlay here as it has its own close methods
         }
@@ -330,10 +330,10 @@
         }
 
         function changeScore(team, delta) {
-            if (team === 'MAGHETTOS') {
-                gameState.MAGHETTOSScore = Math.max(0, gameState.MAGHETTOSScore + delta);
+            if (team === 'team1') {
+                gameState.team1Score = Math.max(0, gameState.team1Score + delta);
             } else {
-                gameState.KAA ChonjooScore = Math.max(0, gameState.KAA ChonjooScore + delta);
+                gameState.team2Score = Math.max(0, gameState.team2Score + delta);
             }
             updateDisplay();
         }
@@ -421,8 +421,8 @@
         function resetMatch() {
             pauseTimer();
             gameState = {
-                MAGHETTOSScore: 0,
-                KAA ChonjooScore: 0,
+                team1Score: 0,
+                team2Score: 0,
                 seconds: 0,
                 milliseconds: 0,
                 isRunning: false,
