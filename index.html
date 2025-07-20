@@ -187,6 +187,7 @@
             mombasaScore: 0,
             matataScore: 0,
             seconds: 0,
+            milliseconds: 0,
             isRunning: false,
             period: '1ST HALF',
             addedTime: 0,
@@ -263,8 +264,9 @@
             
             const minutes = Math.floor(gameState.seconds / 60);
             const seconds = gameState.seconds % 60;
+            const centiseconds = Math.floor(gameState.milliseconds / 10);
             document.getElementById('timer-display').textContent = 
-                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${centiseconds.toString().padStart(2, '0')}`;
 
             // Update button states only if timer controls are visible
             const timerControls = document.getElementById('timer-controls');
@@ -340,9 +342,13 @@
             if (!gameState.isRunning) {
                 gameState.isRunning = true;
                 timerInterval = setInterval(() => {
-                    gameState.seconds++;
+                    gameState.milliseconds += 10;
+                    if (gameState.milliseconds >= 1000) {
+                        gameState.milliseconds = 0;
+                        gameState.seconds++;
+                    }
                     updateDisplay();
-                }, 1000);
+                }, 10);
                 updateDisplay();
             }
         }
@@ -358,11 +364,18 @@
         function resetTimer() {
             pauseTimer();
             gameState.seconds = 0;
+            gameState.milliseconds = 0;
             updateDisplay();
         }
 
         function adjustTime(secondsToAdd) {
-            gameState.seconds = Math.max(0, gameState.seconds + secondsToAdd);
+            const newTotalSeconds = gameState.seconds + secondsToAdd;
+            if (newTotalSeconds < 0) {
+                gameState.seconds = 0;
+                gameState.milliseconds = 0;
+            } else {
+                gameState.seconds = newTotalSeconds;
+            }
             updateDisplay();
             
             // Show added time indicator for positive adjustments
@@ -398,6 +411,7 @@
                 mombasaScore: 0,
                 matataScore: 0,
                 seconds: 0,
+                milliseconds: 0,
                 isRunning: false,
                 period: '1ST HALF',
                 addedTime: 0,
