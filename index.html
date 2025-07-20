@@ -51,10 +51,22 @@
                         </div>
                         
                         <!-- Time Adjustment Controls (Hidden by default) -->
-                        <div id="time-adjust-controls" class="hidden mt-2 space-x-1">
-                            <button onclick="adjustTime(60)" class="bg-kick-green hover:bg-green-400 text-kick-dark px-2 py-1 rounded text-xs font-bold">+1M</button>
-                            <button onclick="adjustTime(-60)" class="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-xs font-bold">-1M</button>
-                            <button onclick="adjustTime(30)" class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs font-bold">+30S</button>
+                        <div id="time-adjust-controls" class="hidden mt-2">
+                            <!-- First row - Minutes -->
+                            <div class="flex justify-center space-x-1 mb-1">
+                                <button onclick="adjustTime(60)" class="bg-kick-green hover:bg-green-400 text-kick-dark px-2 py-1 rounded text-xs font-bold">+1M</button>
+                                <button onclick="adjustTime(-60)" class="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-xs font-bold">-1M</button>
+                                <button onclick="adjustTime(30)" class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs font-bold">+30S</button>
+                            </div>
+                            <!-- Second row - Seconds -->
+                            <div class="flex justify-center space-x-1">
+                                <button onclick="adjustTime(10)" class="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded text-xs font-bold">+10S</button>
+                                <button onclick="adjustTime(-10)" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs font-bold">-10S</button>
+                                <button onclick="adjustTime(5)" class="bg-green-400 hover:bg-green-500 text-white px-2 py-1 rounded text-xs font-bold">+5S</button>
+                                <button onclick="adjustTime(-5)" class="bg-red-400 hover:bg-red-500 text-white px-2 py-1 rounded text-xs font-bold">-5S</button>
+                                <button onclick="adjustTime(1)" class="bg-green-300 hover:bg-green-400 text-kick-dark px-2 py-1 rounded text-xs font-bold">+1S</button>
+                                <button onclick="adjustTime(-1)" class="bg-red-300 hover:bg-red-400 text-white px-2 py-1 rounded text-xs font-bold">-1S</button>
+                            </div>
                         </div>
                         
                         <!-- Period Menu (Hidden by default) -->
